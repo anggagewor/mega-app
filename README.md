@@ -22,6 +22,17 @@ All-in-one app just for fun! 🚀
 - **Phone Scraper** – Scrape phone specifications.
 - **Product Price Integration** – Compare & track product prices across sources.
 - **Football Data Scraper** – Scrape football leagues, players, teams, and transfer history.
+- **Marketplace Scraper** – Scrape product data from various marketplaces.
+- **Income & Expense Tracker** – Track financial transactions.
+- **Calendar App** – Personal event and schedule management.
+- **Weather Info** – Fetch weather data from an API and display it on the dashboard.
+- **Currency Exchange Tracker** – Track real-time currency exchange rates.
+- **URL Shortener** – Generate short links like bit.ly.
+- **Image Optimizer** – Compress and resize images directly in the app.
+- **PDF Tools** – Convert, merge, and split PDFs.
+- **Password Manager** – Store encrypted credentials locally.
+- **Code Snippet Manager** – Save and search code snippets with categories/tags.
+- **AI Chatbot Integration** – Local AI assistant integration (self-hosted GPT-style bot).
 
 ## Installation
 

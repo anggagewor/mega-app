@@ -21,10 +21,12 @@ All-in-one app just for fun! 🚀
 - **PC Parts Scraper** – Scrape PC component data.
 - **Phone Scraper** – Scrape phone specifications.
 - **Product Price Integration** – Compare & track product prices across sources.
+- **Football Data Scraper** – Scrape football leagues, players, teams, and transfer history.
 
 ## Installation
 
 _(Coming soon)_
 
 ## License
-MIT  
+
+This project is licensed under the **MIT License**.  

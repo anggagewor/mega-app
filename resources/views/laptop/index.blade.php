@@ -36,31 +36,29 @@
         </div>
         <div class="col-md-9">
             <div class="card">
-                <div class="table-responsive">
-                    <table class="table table-vcenter card-table">
-                        <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Brand</th>
-                            <th>S/N</th>
-                            <th class="w-1"></th>
-                        </tr>
-                        </thead>
-                        <tbody>
+                <table class="table table-vcenter card-table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Brand</th>
+                        <th>S/N</th>
+                        <th class="w-1"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
 
-                        @foreach($laptops as $laptop)
-                            <tr>
-                                <td><a href="{{ route('laptops.show',['id' => $laptop->id]) }}" class="text-reset">{{ $laptop->model }}</a></td>
-                                <td><a href="{{ route('laptops.show',['id' => $laptop->id]) }}" class="text-reset">{{ $laptop->brand->name ?? '-' }}</a></td>
-                                <td>{{ $laptop->part_number }}</td>
-                                <td>
-                                    <a href="#">Edit</a>
-                                </td>
-                            </tr>
-                        </tbody>
-                        @endforeach
-                    </table>
-                </div>
+                    @foreach($laptops as $laptop)
+                        <tr>
+                            <td><a href="{{ route('laptops.show',['id' => $laptop->id]) }}" class="text-reset">{{ $laptop->model }}</a></td>
+                            <td><a href="{{ route('laptops.show',['id' => $laptop->id]) }}" class="text-reset">{{ $laptop->brand->name ?? '-' }}</a></td>
+                            <td>{{ $laptop->part_number }}</td>
+                            <td>
+                                <a href="#">Edit</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                    @endforeach
+                </table>
             </div>
 
             <div class="d-flex mt-5">

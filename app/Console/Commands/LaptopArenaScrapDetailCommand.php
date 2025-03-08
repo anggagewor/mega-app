@@ -38,21 +38,28 @@ class LaptopArenaScrapDetailCommand extends Command
     public function handle(): void
     {
         ini_set('memory_limit', '-1');
-        $links = ScrapedLaptop::get();
+        $this->info('| ------------------------------------------------------------------------------');
+        $this->info('| Laptop Arena Scrap Detail');
+        $this->info('| v.0.0.1');
+        $this->info('| ------------------------------------------------------------------------------');
+        $links = ScrapedLaptop::where('status','pending')->orderBy('id','asc')->get();
         foreach ($links as $link) {
             $url = $link->url;
             $id = $link->id;
+            $this->info('| Update progress');
             $scrapedLaptop = ScrapedLaptop::whereId($id)->first();
             $scrapedLaptop->status = 'processing';
             $scrapedLaptop->last_checked = now();
             $scrapedLaptop->save();
             $client = HttpClient::create();
+            $this->info('| sending request to ' . $url);
             $response = $client->request('GET', $url, [
                 'headers' => [
                     'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36'
                 ]
             ]);
             try {
+                $this->info('| Parsing data');
                 $crawler = new Crawler($response->getContent());
                 $tables = $crawler->filter('table.specs.responsive');
                 $images = $crawler->filter('img.gallery-image')->each(function (Crawler $image) {
@@ -88,6 +95,7 @@ class LaptopArenaScrapDetailCommand extends Command
                         'part_number' => $parse['part_number']
                     ])->first();
                     if(!$laptopModel) {
+                        $this->info('| insert model');
                         $this->info('insert model laptop '.$title);
                         $laptopModel = new LaptopModel;
                         $laptopModel->brand_id = $brandModel->id;
@@ -104,7 +112,7 @@ class LaptopArenaScrapDetailCommand extends Command
                                 'feature_name' => $feature_value
                             ])->first();
                             if(!$feature){
-                                $this->info('insert laptop feature '.$feature_name);
+                                $this->info('| insert feature '.$feature_name);
                                 $laptopFeature = new LaptopModelFeature;
                                 $laptopFeature->laptop_model_id = $laptopModel->id;
                                 $laptopFeature->feature_name = $feature_name;
@@ -120,7 +128,7 @@ class LaptopArenaScrapDetailCommand extends Command
                             'image_url' => $image
                         ])->first();
                         if(!$check){
-                            $this->info('insert laptop image '.$image);
+                            $this->info('| insert image '.$image);
                             $laptopModelGallery = new LaptopModelGallery;
                             $laptopModelGallery->laptop_model_id = $laptopModel->id;
                             $laptopModelGallery->image_url = $image;
@@ -128,10 +136,14 @@ class LaptopArenaScrapDetailCommand extends Command
                         }
                     }
 
+                    $this->info('| Update data');
                     $scrapedLaptop = ScrapedLaptop::whereId($id)->first();
                     $scrapedLaptop->status = 'done';
                     $scrapedLaptop->last_checked = now();
                     $scrapedLaptop->save();
+                    $this->info('| sleep 2');
+                    sleep(2);
+                    $this->info('| ------------------------------------------------------------------------------');
 
                 }
 

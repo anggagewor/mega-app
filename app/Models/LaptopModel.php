@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- *
+ * 
  *
  * @property-read \App\Models\LaptopBrand|null $brand
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\LaptopPort> $ports
@@ -47,6 +47,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static Builder<static>|LaptopModel whereResolution($value)
  * @method static Builder<static>|LaptopModel whereUpdatedAt($value)
  * @method static Builder<static>|LaptopModel whereWeight($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\LaptopModelFeature> $features
+ * @property-read int|null $features_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\LaptopModelGallery> $galleries
+ * @property-read int|null $galleries_count
  * @mixin \Eloquent
  */
 class LaptopModel extends Model

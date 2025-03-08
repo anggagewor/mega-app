@@ -12,7 +12,7 @@
     </div>
     <div class="col-md-8">
         <div class="card">
-            <table class="table table-vcenter card-table">
+            <table class="table table-vcenter card-table table-striped">
                 <tbody>
                 @foreach($laptop->features as $feature)
                     <tr>

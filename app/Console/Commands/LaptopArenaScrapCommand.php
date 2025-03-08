@@ -33,14 +33,14 @@ class LaptopArenaScrapCommand extends Command
         $first = $this->fetchData($brand, $last_prod_nr);
         $crawler = new Crawler($first);
         $links = $crawler->filter('div.product > a')->each(function (Crawler $node, $i) {
-            return 'https://www.laptoparena.net'.$node->attr('href');
+            return 'https://www.laptoparena.net' . $node->attr('href');
         });
         $last_prod_nr = $crawler->filter('span.button.load_more_products')->each(function (Crawler $node, $i) {
             $text = $node->text();
             // Ambil kedua angka dari teks
             preg_match_all('/\d+/', $text, $matches);
             if (!empty($matches[0])) {
-                return (int) $matches[0][1];
+                return (int)$matches[0][1];
             } else {
                 return 0;
             }
@@ -50,7 +50,7 @@ class LaptopArenaScrapCommand extends Command
             // Ambil kedua angka dari teks
             preg_match_all('/\d+/', $text, $matches);
             if (!empty($matches[0])) {
-                return (int) $matches[0][0];
+                return (int)$matches[0][0];
             } else {
                 return 0;
             }
@@ -58,19 +58,19 @@ class LaptopArenaScrapCommand extends Command
         $unique_urls = array_values(array_unique($links));
         $data = array_map(fn($url) => ['url' => $url, 'status' => 'pending'], $unique_urls);
         ScrapedLaptop::insertOrIgnore($data);
-        if(isset($current[0])){
-            do{
+        if (isset($current[0])) {
+            do {
                 $data = $this->fetchData($brand, $current);
                 $crawler = new Crawler($data);
                 $links = $crawler->filter('div.product > a')->each(function (Crawler $node, $i) {
-                    return 'https://www.laptoparena.net'.$node->attr('href');
+                    return 'https://www.laptoparena.net' . $node->attr('href');
                 });
                 $last_prod_nr = $crawler->filter('span.button.load_more_products')->each(function (Crawler $node, $i) {
                     $text = $node->text();
                     // Ambil kedua angka dari teks
                     preg_match_all('/\d+/', $text, $matches);
                     if (!empty($matches[0])) {
-                        return (int) $matches[0][1];
+                        return (int)$matches[0][1];
                     } else {
                         return 0;
                     }
@@ -80,7 +80,7 @@ class LaptopArenaScrapCommand extends Command
                     // Ambil kedua angka dari teks
                     preg_match_all('/\d+/', $text, $matches);
                     if (!empty($matches[0])) {
-                        return (int) $matches[0][0];
+                        return (int)$matches[0][0];
                     } else {
                         return 0;
                     }
@@ -88,21 +88,21 @@ class LaptopArenaScrapCommand extends Command
                 $unique_urls = array_values(array_unique($links));
                 $data = array_map(fn($url) => ['url' => $url, 'status' => 'pending'], $unique_urls);
                 ScrapedLaptop::insertOrIgnore($data);
-                if(!isset($current[0])){
+                if (!isset($current[0])) {
                     $this->info('Stoping No Data');
                     break;
                 }
                 $current = $current[0] + $step;
-                $this->info('handle current : '.$current);
-                $this->info('handle total data : '.$last_prod_nr[0]);
-                if($current-$step > $last_prod_nr[0]){
-                    $this->info('$current-$step '. $current-$step);
+                $this->info('handle current : ' . $current);
+                $this->info('handle total data : ' . $last_prod_nr[0]);
+                if ($current - $step > $last_prod_nr[0]) {
+                    $this->info('$current-$step ' . $current - $step);
                     $this->info('Stoping');
                     break;
                 }
                 $this->info('Sleep');
                 sleep(3);
-            }while ($current);
+            } while ($current);
         }
 //        dump($first);
     }
@@ -113,18 +113,18 @@ class LaptopArenaScrapCommand extends Command
         $params = [
             "brand" => $brand
         ];
-        if(is_array($last_prod_nr)){
+        if (is_array($last_prod_nr)) {
             $last_prod_nr = $last_prod_nr[0];
         }
 
         if ($last_prod_nr !== null) {
-            $params["last_prod_nr"] = $last_prod_nr-16;
+            $params["last_prod_nr"] = $last_prod_nr - 16;
         }
-        $this->info( "current: $last_prod_nr");
+        $this->info("current: $last_prod_nr");
         $params["display_mode"] = "grid";
 
         $url = $baseUrl . "?" . http_build_query($params);
-        $this->info( "Fetching: $url");
+        $this->info("Fetching: $url");
 
         return file_get_contents($url);
     }

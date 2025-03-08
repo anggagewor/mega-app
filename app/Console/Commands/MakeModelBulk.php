@@ -27,8 +27,8 @@ class MakeModelBulk extends Command
     public function handle()
     {
         $models = $this->option('models');
-        foreach (explode(',',$models) as $model) {
-            $this->info('Make Model '.$model);
+        foreach (explode(',', $models) as $model) {
+            $this->info('Make Model ' . $model);
             Artisan::call('make:model', ['name' => $model]);
 
         }

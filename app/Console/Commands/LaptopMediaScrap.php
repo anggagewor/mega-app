@@ -42,7 +42,7 @@ class LaptopMediaScrap extends Command
     {
         $urls = $this->option('urls');
         foreach (explode(',', $urls) as $url) {
-            $this->info('scrap '. $url);
+            $this->info('scrap ' . $url);
             $client = HttpClient::create();
             $response = $client->request('GET', $url, [
                 'headers' => [
@@ -257,7 +257,7 @@ class LaptopMediaScrap extends Command
                     $laptop->weight = $cleaned['model']['weight'];
                     $laptop->display_size = $cleaned['model']['display_size'];
                     $laptop->resolution = $cleaned['model']['resolution'];
-                    $laptop->battery_capacity = $cleaned['model']['battery_capacity']??'-';
+                    $laptop->battery_capacity = $cleaned['model']['battery_capacity'] ?? '-';
                     $laptop->save();
                 }
                 $prosesor = LaptopProcessor::where('model_id', $laptop->id)->first();
@@ -266,10 +266,10 @@ class LaptopMediaScrap extends Command
                     $prosesor->model_id = $laptop->id;
                     $prosesor->brand = $cleaned['processors']['brand'];
                     $prosesor->model = $cleaned['processors']['model'];
-                    $prosesor->cores = $cleaned['processors']['cores']??'-';
-                    $prosesor->threads = $cleaned['processors']['threads']??'-';
+                    $prosesor->cores = $cleaned['processors']['cores'] ?? '-';
+                    $prosesor->threads = $cleaned['processors']['threads'] ?? '-';
                     $prosesor->base_clock = $cleaned['processors']['base_clock'] ?? '-';
-                    $prosesor->turbo_clock = $cleaned['processors']['turbo_clock']??'-';
+                    $prosesor->turbo_clock = $cleaned['processors']['turbo_clock'] ?? '-';
                     $prosesor->tdp_watt = $cleaned['processors']['tdp_watt']
                         ?? $cleaned['processors']['tdp_base_watt']
                         ?? '-';
@@ -283,7 +283,7 @@ class LaptopMediaScrap extends Command
                     $ram->total_slots = $cleaned['ram']['total_slots'] ?? $cleaned['ram']['form_factor'] ?? '-';
                     $ram->max_capacity = $cleaned['ram']['max_capacity'];
                     $ram->ram_type = $cleaned['ram']['ram_type'];
-                    $ram->max_speed = $cleaned['ram']['max_speed']??$cleaned['ram']['max_clock_speed'] ?? '-';
+                    $ram->max_speed = $cleaned['ram']['max_speed'] ?? $cleaned['ram']['max_clock_speed'] ?? '-';
                     $ram->save();
                 }
                 if (isset($cleaned['gpu']['model']['discrete']['is_integrated'])) {
@@ -291,7 +291,7 @@ class LaptopMediaScrap extends Command
                     if (!$discrete) {
                         $discrete = new LaptopGpu();
                         $discrete->model_id = $laptop->id;
-                        $discrete->brand = $cleaned['gpu_model_discrete_brand']??'-';
+                        $discrete->brand = $cleaned['gpu_model_discrete_brand'] ?? '-';
                         $discrete->model = $cleaned['gpu']['model']['discrete']['name'];
                         $discrete->vram = $cleaned['gpu_model_discrete_vram'];
                         $discrete->is_integrated = (boolean)$cleaned['gpu']['model']['discrete']['is_integrated'];
@@ -337,9 +337,9 @@ class LaptopMediaScrap extends Command
                 if (!$power) {
                     $power = new LaptopPowerSpec();
                     $power->model_id = $laptop->id;
-                    $power->adapter_watt = $cleaned["power_specs"]['adapter_watt']??'-';
-                    $power->battery_watt_hour = $cleaned["power_specs"]['battery_watt_hour']??'-';
-                    $power->charger_type = $cleaned["power_specs"]['charger_type']??'-';
+                    $power->adapter_watt = $cleaned["power_specs"]['adapter_watt'] ?? '-';
+                    $power->battery_watt_hour = $cleaned["power_specs"]['battery_watt_hour'] ?? '-';
+                    $power->charger_type = $cleaned["power_specs"]['charger_type'] ?? '-';
                     $power->save();
                 }
             } catch (ClientExceptionInterface|RedirectionExceptionInterface|ServerExceptionInterface|TransportExceptionInterface $e) {

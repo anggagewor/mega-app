@@ -43,120 +43,124 @@ class LaptopArenaScrapDetailCommandManual extends Command
         $this->info('| Laptop Arena Scrap Detail');
         $this->info('| v.0.0.1');
         $this->info('| ------------------------------------------------------------------------------');
-        $links = ScrapedLaptop::where('status','pending')->orderBy('id','asc')->get();
-        foreach ($links as $link) {
-            $url = $link->url;
-            $id = $link->id;
-            $this->info('| Update progress');
-            $scrapedLaptop = ScrapedLaptop::whereId($id)->first();
-            $scrapedLaptop->status = 'processing';
-            $scrapedLaptop->last_checked = now();
-            $scrapedLaptop->save();
-            $client = HttpClient::create();
-            $this->info('| sending request to ' . $url);
-            $response = $client->request('GET', $url, [
-                'headers' => [
-                    'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36'
-                ]
-            ]);
-            try {
-                $this->info('| Parsing data');
-                $crawler = new Crawler($response->getContent());
-                $tables = $crawler->filter('table.specs.responsive');
-                $images = $crawler->filter('img.gallery-image')->each(function (Crawler $image) {
-                    return 'https://www.laptoparena.net'.($image->attr('data-src') ?? $image->attr('src'));
-                });
-                $datas = $tables->each(function (Crawler $tr) {
-                    return $tr->filter('tr')->each(function (Crawler $td) {
-                        return $td->filter('td')->each(function (Crawler $content) {
-                            return $content->text();
-                        });
-                    });
-                });
-
-                $title = $crawler->filterXPath('//div[@style="font-weight: 600;font-size: 22px; color: grey; line-height: 40px;"]');
-                $title = $title->text();
-
-                $filtered = array_filter($datas, function ($item) {
-                    return !empty($item); // Hapus array kosong
-                });
-                $filtered = array_filter($filtered[0], function ($filter) {
-                    return !empty($filter); // Hapus array kosong
-                });
-                preg_match('/\.net\/([^\/]+)/', $url, $matches);
-                $brand = $matches[1];
-                $parse = $this->parseLaptopUrl($url);
-                $this->info('Url '.$url);
-                $brandModel = LaptopBrand::where('name', $brand)->first();
-
-                if($brandModel) {
-                    $laptopModel = LaptopModel::where([
-                        'brand_id' => $brandModel->id,
-                        'model' => $title,
-                        'part_number' => $parse['part_number']
-                    ])->first();
-                    if(!$laptopModel) {
-                        $this->info('| insert model');
-                        $this->info('insert model laptop '.$title);
-                        $laptopModel = new LaptopModel;
-                        $laptopModel->brand_id = $brandModel->id;
-                        $laptopModel->model = $title;
-                        $laptopModel->part_number = $parse['part_number']??'';
-                        $laptopModel->save();
-                    }
-                    foreach ($filtered as $filter){
-                        if(count($filter) == 2){
-                            $feature_name = $filter[0];
-                            $feature_value = $filter[1];
-                            $feature = LaptopModelFeature::where([
-                                'laptop_model_id' => $laptopModel->id,
-                                'feature_name' => $feature_value
-                            ])->first();
-                            if(!$feature){
-                                $this->info('| insert feature '.$feature_name);
-                                $laptopFeature = new LaptopModelFeature;
-                                $laptopFeature->laptop_model_id = $laptopModel->id;
-                                $laptopFeature->feature_name = $feature_name;
-                                $laptopFeature->feature_value = $feature_value;
-                                $laptopFeature->save();
-                            }
-                        }
-                    }
-
-                    foreach ($images as $image) {
-                        $check = LaptopModelGallery::where([
-                            'laptop_model_id' => $laptopModel->id,
-                            'image_url' => $image
-                        ])->first();
-                        if(!$check){
-                            $this->info('| insert image '.$image);
-                            $laptopModelGallery = new LaptopModelGallery;
-                            $laptopModelGallery->laptop_model_id = $laptopModel->id;
-                            $laptopModelGallery->image_url = $image;
-                            $laptopModelGallery->save();
-                        }
-                    }
-
-                    $this->info('| Update data');
+        do {
+            $links = ScrapedLaptop::where('status', 'pending')->orderBy('id', 'asc')->limit(1)->get();
+            if ($links->isNotEmpty()) {
+                foreach ($links as $link) {
+                    $url = $link->url;
+                    $id = $link->id;
+                    $this->info('| Update progress');
                     $scrapedLaptop = ScrapedLaptop::whereId($id)->first();
-                    $scrapedLaptop->status = 'done';
+                    $scrapedLaptop->status = 'processing';
                     $scrapedLaptop->last_checked = now();
                     $scrapedLaptop->save();
+                    $client = HttpClient::create();
+                    $this->info('| sending request to ' . $url);
+                    $response = $client->request('GET', $url, [
+                        'headers' => [
+                            'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36'
+                        ]
+                    ]);
+                    try {
+                        $this->info('| Parsing data');
+                        $crawler = new Crawler($response->getContent());
+                        $tables = $crawler->filter('table.specs.responsive');
+                        $images = $crawler->filter('img.gallery-image')->each(function (Crawler $image) {
+                            return 'https://www.laptoparena.net'.($image->attr('data-src') ?? $image->attr('src'));
+                        });
+                        $datas = $tables->each(function (Crawler $tr) {
+                            return $tr->filter('tr')->each(function (Crawler $td) {
+                                return $td->filter('td')->each(function (Crawler $content) {
+                                    return $content->text();
+                                });
+                            });
+                        });
+
+                        $title = $crawler->filterXPath('//div[@style="font-weight: 600;font-size: 22px; color: grey; line-height: 40px;"]');
+                        $title = $title->text();
+
+                        $filtered = array_filter($datas, function ($item) {
+                            return !empty($item); // Hapus array kosong
+                        });
+                        $filtered = array_filter($filtered[0], function ($filter) {
+                            return !empty($filter); // Hapus array kosong
+                        });
+                        preg_match('/\.net\/([^\/]+)/', $url, $matches);
+                        $brand = $matches[1];
+                        $parse = $this->parseLaptopUrl($url);
+                        $this->info('Url '.$url);
+                        $brandModel = LaptopBrand::where('name', $brand)->first();
+
+                        if($brandModel) {
+                            $laptopModel = LaptopModel::where([
+                                'brand_id' => $brandModel->id,
+                                'model' => $title,
+                                'part_number' => $parse['part_number']
+                            ])->first();
+                            if(!$laptopModel) {
+                                $this->info('| insert model');
+                                $laptopModel = new LaptopModel;
+                                $laptopModel->brand_id = $brandModel->id;
+                                $laptopModel->model = $title;
+                                $laptopModel->part_number = $parse['part_number']??'';
+                                $laptopModel->save();
+                            }
+                            foreach ($filtered as $filter){
+                                if(count($filter) == 2){
+                                    $feature_name = $filter[0];
+                                    $feature_value = $filter[1];
+                                    $feature = LaptopModelFeature::where([
+                                        'laptop_model_id' => $laptopModel->id,
+                                        'feature_name' => $feature_value
+                                    ])->first();
+                                    if(!$feature){
+                                        $this->info('| insert feature '.$feature_name);
+                                        $laptopFeature = new LaptopModelFeature;
+                                        $laptopFeature->laptop_model_id = $laptopModel->id;
+                                        $laptopFeature->feature_name = $feature_name;
+                                        $laptopFeature->feature_value = $feature_value;
+                                        $laptopFeature->save();
+                                    }
+                                }
+                            }
+
+                            foreach ($images as $image) {
+                                $check = LaptopModelGallery::where([
+                                    'laptop_model_id' => $laptopModel->id,
+                                    'image_url' => $image
+                                ])->first();
+                                if(!$check){
+                                    $this->info('| insert image '.$image);
+                                    $laptopModelGallery = new LaptopModelGallery;
+                                    $laptopModelGallery->laptop_model_id = $laptopModel->id;
+                                    $laptopModelGallery->image_url = $image;
+                                    $laptopModelGallery->save();
+                                }
+                            }
+
+                            $this->info('| Update data');
+                            $scrapedLaptop = ScrapedLaptop::whereId($id)->first();
+                            $scrapedLaptop->status = 'done';
+                            $scrapedLaptop->last_checked = now();
+                            $scrapedLaptop->save();
 //                    $this->info('| sleep 2');
 //                    sleep(2);
-                    $this->info('| ------------------------------------------------------------------------------');
+                            $this->info('| ------------------------------------------------------------------------------');
 
+                        }
+
+                    } catch (ClientExceptionInterface|TransportExceptionInterface|ServerExceptionInterface|RedirectionExceptionInterface $e) {
+
+                        $scrapedLaptop = ScrapedLaptop::whereId($id)->first();
+                        $scrapedLaptop->status = 'error';
+                        $scrapedLaptop->last_checked = now();
+                        $scrapedLaptop->save();
+                        dump($e->getMessage());
+                    }
                 }
-
-            } catch (ClientExceptionInterface|TransportExceptionInterface|ServerExceptionInterface|RedirectionExceptionInterface $e) {
-
-                $scrapedLaptop = ScrapedLaptop::whereId($id)->first();
-                $scrapedLaptop->status = 'error';
-                $scrapedLaptop->last_checked = now();
-                $scrapedLaptop->save();
-                dump($e->getMessage());
             }
-        }
+        }while ($links->isNotEmpty());
+
     }
 
     public function parseLaptopUrl($url): ?array

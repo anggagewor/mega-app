@@ -12,7 +12,7 @@
                     </div>
                     <div class="col">
                         <div class="font-weight-medium">{{ $totalAnime }}</div>
-                        <div class="text-secondary">Anime</div>
+                        <div class="text-secondary"><a href="{{ route('animes.index') }}">Anime</a></div>
                     </div>
                     <div class="col-auto"></div>
                 </div>
@@ -30,7 +30,7 @@
                     </div>
                     <div class="col">
                         <div class="font-weight-medium">{{ $totalLaptops }}</div>
-                        <div class="text-secondary">Laptop</div>
+                        <div class="text-secondary"><a href="{{ route('laptops.index') }}">Laptop</a></div>
                     </div>
                     <div class="col-auto"></div>
                 </div>

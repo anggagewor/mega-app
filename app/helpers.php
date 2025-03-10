@@ -15,3 +15,14 @@ if (!function_exists('convert_to_tags')) {
         return $tags;
     }
 }
+if (!function_exists('isActiveRoute')) {
+    function isActiveRoute(...$patterns): string
+    {
+        foreach ($patterns as $pattern) {
+            if (request()->routeIs($pattern)) {
+                return 'active';
+            }
+        }
+        return '';
+    }
+}

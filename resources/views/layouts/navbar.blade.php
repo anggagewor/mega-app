@@ -155,7 +155,7 @@
                             </a>
                         </div>
                     </li>
-                    <li class="nav-item dropdown {{ request()->routeIs('laptops.*') ? 'active' : '' }}">
+                    <li class="nav-item dropdown {{ isActiveRoute('laptops.*') }}">
                         <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"
                            data-bs-auto-close="outside" role="button" aria-expanded="false">
                             <span class="nav-link-icon d-md-none d-lg-inline-block">
@@ -225,7 +225,7 @@
                             </a>
                         </div>
                     </li>
-                    <li class="nav-item dropdown {{ request()->routeIs('animes.*') ? 'active' : '' }}">
+                    <li class="nav-item dropdown {{ isActiveRoute('animes.*') }}">
                         <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"
                            data-bs-auto-close="outside" role="button" aria-expanded="false">
                             <span class="nav-link-icon d-md-none d-lg-inline-block">
@@ -279,7 +279,7 @@
                             </a>
                         </div>
                     </li>
-                    <li class="nav-item dropdown {{ request()->routeIs('topics.*') ? 'active' : '' }}">
+                    <li class="nav-item dropdown  {{ isActiveRoute('topics.*') }}">
                         <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"
                            data-bs-auto-close="outside" role="button" aria-expanded="false">
                             <span class="nav-link-icon d-md-none d-lg-inline-block">

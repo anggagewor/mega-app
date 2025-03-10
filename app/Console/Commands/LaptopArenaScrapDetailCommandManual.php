@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Jobs\ScrapLaptopDetailJob;
 use App\Models\LaptopBrand;
 use App\Models\LaptopModel;
 use App\Models\LaptopModelFeature;
@@ -66,7 +65,7 @@ class LaptopArenaScrapDetailCommandManual extends Command
                         $crawler = new Crawler($response->getContent());
                         $tables = $crawler->filter('table.specs.responsive');
                         $images = $crawler->filter('img.gallery-image')->each(function (Crawler $image) {
-                            return 'https://www.laptoparena.net'.($image->attr('data-src') ?? $image->attr('src'));
+                            return 'https://www.laptoparena.net' . ($image->attr('data-src') ?? $image->attr('src'));
                         });
                         $datas = $tables->each(function (Crawler $tr) {
                             return $tr->filter('tr')->each(function (Crawler $td) {
@@ -88,33 +87,33 @@ class LaptopArenaScrapDetailCommandManual extends Command
                         preg_match('/\.net\/([^\/]+)/', $url, $matches);
                         $brand = $matches[1];
                         $parse = $this->parseLaptopUrl($url);
-                        $this->info('Url '.$url);
+                        $this->info('Url ' . $url);
                         $brandModel = LaptopBrand::where('name', $brand)->first();
 
-                        if($brandModel) {
+                        if ($brandModel) {
                             $laptopModel = LaptopModel::where([
                                 'brand_id' => $brandModel->id,
                                 'model' => $title,
                                 'part_number' => $parse['part_number']
                             ])->first();
-                            if(!$laptopModel) {
+                            if (!$laptopModel) {
                                 $this->info('| insert model');
                                 $laptopModel = new LaptopModel;
                                 $laptopModel->brand_id = $brandModel->id;
                                 $laptopModel->model = $title;
-                                $laptopModel->part_number = $parse['part_number']??'';
+                                $laptopModel->part_number = $parse['part_number'] ?? '';
                                 $laptopModel->save();
                             }
-                            foreach ($filtered as $filter){
-                                if(count($filter) == 2){
+                            foreach ($filtered as $filter) {
+                                if (count($filter) == 2) {
                                     $feature_name = $filter[0];
                                     $feature_value = $filter[1];
                                     $feature = LaptopModelFeature::where([
                                         'laptop_model_id' => $laptopModel->id,
                                         'feature_name' => $feature_value
                                     ])->first();
-                                    if(!$feature){
-                                        $this->info('| insert feature '.$feature_name);
+                                    if (!$feature) {
+                                        $this->info('| insert feature ' . $feature_name);
                                         $laptopFeature = new LaptopModelFeature;
                                         $laptopFeature->laptop_model_id = $laptopModel->id;
                                         $laptopFeature->feature_name = $feature_name;
@@ -129,8 +128,8 @@ class LaptopArenaScrapDetailCommandManual extends Command
                                     'laptop_model_id' => $laptopModel->id,
                                     'image_url' => $image
                                 ])->first();
-                                if(!$check){
-                                    $this->info('| insert image '.$image);
+                                if (!$check) {
+                                    $this->info('| insert image ' . $image);
                                     $laptopModelGallery = new LaptopModelGallery;
                                     $laptopModelGallery->laptop_model_id = $laptopModel->id;
                                     $laptopModelGallery->image_url = $image;
@@ -159,7 +158,7 @@ class LaptopArenaScrapDetailCommandManual extends Command
                     }
                 }
             }
-        }while ($links->isNotEmpty());
+        } while ($links->isNotEmpty());
 
     }
 

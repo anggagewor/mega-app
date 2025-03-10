@@ -19,6 +19,7 @@ use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
+use Throwable;
 
 class ScrapLaptopDetailJob implements ShouldQueue
 {
@@ -32,7 +33,7 @@ class ScrapLaptopDetailJob implements ShouldQueue
     }
 
     /**
-     * @throws \Throwable
+     * @throws Throwable
      * @throws ServerExceptionInterface
      * @throws RedirectionExceptionInterface
      * @throws ClientExceptionInterface

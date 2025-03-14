@@ -40,3 +40,8 @@ Route::prefix('laptops')->group(function () {
     Route::post('/fetch', [LaptopController::class, 'fetch'])->name('laptops.fetch');
     Route::get('/show/{id}', [LaptopController::class, 'show'])->name('laptops.show');
 });
+
+
+Route::prefix('tools')->group(function () {
+    Route::get('ip-finder',[\App\Http\Controllers\ToolsController::class,'IpFinder'])->name('tools.ip-finder');
+});

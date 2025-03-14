@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 
 /**
- *
+ * 
  *
  * @property int $item_id
  * @property int $shop_id

@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
 /**
- *
+ * 
  *
  * @property-read LaptopBrand|null $brand
  * @property-read Collection<int, LaptopPort> $ports

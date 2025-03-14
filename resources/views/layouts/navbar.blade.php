@@ -181,7 +181,7 @@
                             </a>
                         </div>
                     </li>
-                    <li class="nav-item dropdown">
+                    <li class="nav-item dropdown {{ request()->routeIs('tools.*') ? 'active' : '' }}">
                         <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"
                            data-bs-auto-close="outside" role="button" aria-expanded="false">
                             <span class="nav-link-icon d-md-none d-lg-inline-block">
@@ -200,6 +200,9 @@
                         <div class="dropdown-menu dropdown-menu-arrow">
                             <a class="dropdown-item" href="#" rel="noopener">
                                 Dashboard
+                            </a>
+                            <a class="dropdown-item {{ request()->routeIs('tools.ip-finder') ? 'active' : '' }}" href="{{ route('tools.ip-finder') }}" rel="noopener">
+                                Ip Finder
                             </a>
                         </div>
                     </li>

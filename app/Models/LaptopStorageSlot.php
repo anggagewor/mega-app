@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 
 /**
- *
+ * 
  *
  * @property-read LaptopModel|null $laptopModel
  * @method static LaptopStorageSlotFactory factory($count = null, $state = [])

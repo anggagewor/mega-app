@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Anime;
 use App\Models\EntertainmentAnime;
 use App\Models\EntertainmentEpisode;
 use App\Models\EntertainmentEpisodeDownload;

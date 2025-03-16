@@ -7,6 +7,8 @@
     <title>Mega App</title>
     <!-- CSS files -->
     <link href="{{ asset('dist/css/tabler.min.css?1738096685') }}" rel="stylesheet"/>
+    <link href="{{ asset('dist/css/tabler-icons.min.css?1738096685') }}" rel="stylesheet"/>
+    <link href="{{ asset('dist/css/custom.css?1738096685') }}" rel="stylesheet"/>
     <link href="{{ asset('dist/css/tabler-flags.min.css?1738096685') }}" rel="stylesheet"/>
     <link href="{{ asset('dist/css/tabler-socials.min.css?1738096685') }}" rel="stylesheet"/>
     <link href="{{ asset('dist/css/tabler-payments.min.css?1738096685') }}" rel="stylesheet"/>
